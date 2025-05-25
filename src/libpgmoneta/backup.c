@@ -730,6 +730,7 @@ pgmoneta_delete_backup(int client_fd, int srv, uint8_t compression, uint8_t encr
 
    pgmoneta_log_info("Delete: %s/%s (Elapsed: %s)", config->common.servers[srv].name,
                      (uintptr_t)pgmoneta_art_search(nodes, NODE_LABEL), elapsed);
+   free(elapsed);
 
    pgmoneta_art_destroy(nodes);
 
