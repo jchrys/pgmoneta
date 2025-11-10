@@ -98,6 +98,8 @@ extern "C" {
 #define CONFIGURATION_ARGUMENT_SSH_BASE_DIR           "ssh_base_dir"
 #define CONFIGURATION_ARGUMENT_SSH_CIPHERS            "ssh_ciphers"
 #define CONFIGURATION_ARGUMENT_SSH_HOSTNAME           "ssh_hostname"
+#define CONFIGURATION_ARGUMENT_SSH_PRIVKEY_PATH       "ssh_privkey_path"
+#define CONFIGURATION_ARGUMENT_SSH_PUBKEY_PATH        "ssh_pubkey_path"
 #define CONFIGURATION_ARGUMENT_SSH_USERNAME           "ssh_username"
 #define CONFIGURATION_ARGUMENT_STORAGE_ENGINE         "storage_engine"
 #define CONFIGURATION_ARGUMENT_TLS                    "tls"

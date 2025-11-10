@@ -1165,6 +1165,38 @@ pgmoneta_read_main_configuration(void* shm, char* filename)
                      unknown = true;
                   }
                }
+               else if (!strcmp(key, "ssh_pubkey_path"))
+               {
+                  if (!strcmp(section, "pgmoneta"))
+                  {
+                     max = strlen(value);
+                     if (max > MAX_PATH - 1)
+                     {
+                        max = MAX_PATH - 1;
+                     }
+                     memcpy(&config->ssh_pubkey_path[0], value, max);
+                  }
+                  else
+                  {
+                     unknown = true;
+                  }
+               }
+               else if (!strcmp(key, "ssh_privkey_path"))
+               {
+                  if (!strcmp(section, "pgmoneta"))
+                  {
+                     max = strlen(value);
+                     if (max > MAX_PATH - 1)
+                     {
+                        max = MAX_PATH - 1;
+                     }
+                     memcpy(&config->ssh_privkey_path[0], value, max);
+                  }
+                  else
+                  {
+                     unknown = true;
+                  }
+               }
                else if (!strcmp(key, "s3_aws_region"))
                {
                   if (!strcmp(section, "pgmoneta"))
@@ -2852,6 +2884,8 @@ add_configuration_response(struct json* res)
    pgmoneta_json_put(res, CONFIGURATION_ARGUMENT_SSH_USERNAME, (uintptr_t)config->ssh_username, ValueString);
    pgmoneta_json_put(res, CONFIGURATION_ARGUMENT_SSH_BASE_DIR, (uintptr_t)config->ssh_base_dir, ValueString);
    pgmoneta_json_put(res, CONFIGURATION_ARGUMENT_SSH_CIPHERS, (uintptr_t)config->ssh_ciphers, ValueString);
+   pgmoneta_json_put(res, CONFIGURATION_ARGUMENT_SSH_PUBKEY_PATH, (uintptr_t)config->ssh_pubkey_path, ValueString);
+   pgmoneta_json_put(res, CONFIGURATION_ARGUMENT_SSH_PRIVKEY_PATH, (uintptr_t)config->ssh_privkey_path, ValueString);
    pgmoneta_json_put(res, CONFIGURATION_ARGUMENT_S3_AWS_REGION, (uintptr_t)config->s3_aws_region, ValueString);
    pgmoneta_json_put(res, CONFIGURATION_ARGUMENT_S3_ACCESS_KEY_ID, (uintptr_t)config->s3_access_key_id, ValueString);
    pgmoneta_json_put(res, CONFIGURATION_ARGUMENT_S3_SECRET_ACCESS_KEY, (uintptr_t)config->s3_secret_access_key, ValueString);

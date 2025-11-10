@@ -149,8 +149,51 @@ ssh_storage_setup(char* name __attribute__((unused)), struct art* nodes)
    pgmoneta_log_debug("SSH storage engine (setup): %s/%s", config->common.servers[server].name, label);
 
    homedir = getenv("HOME");
-   pubkey_path = "/.ssh/id_rsa.pub";
-   privkey_path = "/.ssh/id_rsa";
+
+   // Use configured paths if available, otherwise use defaults
+   if (strlen(config->ssh_pubkey_path) > 0)
+   {
+      // If path is absolute, use it directly; otherwise prepend homedir
+      if (config->ssh_pubkey_path[0] == '/')
+      {
+         pubkey_full_path = pgmoneta_append(pubkey_full_path, config->ssh_pubkey_path);
+      }
+      else
+      {
+         pubkey_full_path = pgmoneta_append(pubkey_full_path, homedir);
+         pubkey_full_path = pgmoneta_append(pubkey_full_path, "/");
+         pubkey_full_path = pgmoneta_append(pubkey_full_path, config->ssh_pubkey_path);
+      }
+   }
+   else
+   {
+      // Default: ~/.ssh/id_rsa.pub
+      pubkey_path = "/.ssh/id_rsa.pub";
+      pubkey_full_path = pgmoneta_append(pubkey_full_path, homedir);
+      pubkey_full_path = pgmoneta_append(pubkey_full_path, pubkey_path);
+   }
+
+   if (strlen(config->ssh_privkey_path) > 0)
+   {
+      // If path is absolute, use it directly; otherwise prepend homedir
+      if (config->ssh_privkey_path[0] == '/')
+      {
+         privkey_full_path = pgmoneta_append(privkey_full_path, config->ssh_privkey_path);
+      }
+      else
+      {
+         privkey_full_path = pgmoneta_append(privkey_full_path, homedir);
+         privkey_full_path = pgmoneta_append(privkey_full_path, "/");
+         privkey_full_path = pgmoneta_append(privkey_full_path, config->ssh_privkey_path);
+      }
+   }
+   else
+   {
+      // Default: ~/.ssh/id_rsa
+      privkey_path = "/.ssh/id_rsa";
+      privkey_full_path = pgmoneta_append(privkey_full_path, homedir);
+      privkey_full_path = pgmoneta_append(privkey_full_path, privkey_path);
+   }
 
    session = ssh_new();
 
@@ -219,18 +262,12 @@ ssh_storage_setup(char* name __attribute__((unused)), struct art* nodes)
          goto error;
    }
 
-   pubkey_full_path = pgmoneta_append(pubkey_full_path, homedir);
-   pubkey_full_path = pgmoneta_append(pubkey_full_path, pubkey_path);
-
    rc = ssh_pki_import_pubkey_file(pubkey_full_path, &client_pubkey);
    if (rc != SSH_OK)
    {
       pgmoneta_log_error("could not import host's public key: %s", strerror(errno));
       goto error;
    }
-
-   privkey_full_path = pgmoneta_append(privkey_full_path, homedir);
-   privkey_full_path = pgmoneta_append(privkey_full_path, privkey_path);
 
    rc = ssh_pki_import_privkey_file(privkey_full_path, NULL, NULL, NULL,
                                     &client_privkey);

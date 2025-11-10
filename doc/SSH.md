@@ -69,3 +69,30 @@ ssh_base_dir = the-path-of-the-directory-where-backups-stored-in
 ```
 
 under the `[pgmoneta]` section.
+
+## SSH Key Configuration (Optional)
+
+By default, pgmoneta uses the standard SSH key paths (`~/.ssh/id_rsa` for private key and `~/.ssh/id_rsa.pub` for public key).
+
+If you need to use custom SSH key paths, you can configure them by adding these optional parameters:
+
+```
+ssh_pubkey_path = /path/to/your/public_key.pub
+ssh_privkey_path = /path/to/your/private_key
+```
+
+**Path Format:**
+- Absolute paths: Start with `/` (e.g., `/home/user/.ssh/custom_key`)
+- Relative paths: Relative to your home directory (e.g., `.ssh/custom_key` resolves to `~/.ssh/custom_key`)
+
+**Example Configuration with Custom Keys:**
+
+```
+[pgmoneta]
+storage_engine = ssh
+ssh_hostname = ec2-instance.example.com
+ssh_username = pgmoneta_user
+ssh_base_dir = /backups/pgmoneta
+ssh_pubkey_path = .ssh/pgmoneta_key.pub
+ssh_privkey_path = .ssh/pgmoneta_key
+```
